@@ -1,273 +1,77 @@
 <div align="center">
 
-# InvestSkill
+# 📊 InvestAnalyst
 
-**Professional investment analysis frameworks for US stocks — works on every AI platform**
-
-**No API keys · No subscriptions · 100% free**
-
-[![Cost: $0](https://img.shields.io/badge/cost-%240%20%C2%B7%20no%20API%20keys-22c55e?style=flat-square)](#no-api-keys-no-cost)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/yennanliu/InvestSkill?style=flat-square&color=gold)](https://github.com/yennanliu/InvestSkill/stargazers)
-[![Release](https://img.shields.io/github/v/release/yennanliu/InvestSkill?style=flat-square&color=22c55e)](https://github.com/yennanliu/InvestSkill/releases)
-[![Tests](https://img.shields.io/github/actions/workflow/status/yennanliu/InvestSkill/test.yml?style=flat-square&label=tests)](https://github.com/yennanliu/InvestSkill/actions)
-
-[Documentation](https://yennanliu.github.io/InvestSkill/) · [Learn Investing](https://yennanliu.github.io/InvestSkill/learning.html) · [Cookbook](https://yennanliu.github.io/InvestSkill/cookbook.html) · [繁體中文](README-zh-TW.md)
+**ระบบกรอบการวิเคราะห์การลงทุนและประเมินมูลค่าหุ้นสหรัฐฯ (Investment Analysis Skills & Knowledge Hub)**
 
 </div>
 
 ---
 
-## What is InvestSkill?
+## 🎯 โครงสร้างโปรเจกต์ (Project Structure)
 
-InvestSkill is a collection of **26 structured analysis frameworks** that turn any AI assistant into an institutional-quality investment analyst. There is no runtime — every skill is a prompt that works in Claude Code, Cursor, Gemini CLI, GitHub Copilot, ChatGPT, or any other LLM.
+โปรเจกต์นี้ได้รับการจัดระเบียบให้มีเฉพาะส่วนสำคัญ 3 ด้านหลัก:
 
-**Nothing to sign up for, nothing to pay for.** No API key, no data-vendor subscription, no billing setup — you bring the AI assistant you already use (a free tier or a local model works too) and InvestSkill is just markdown. See [No API keys, no cost](#no-api-keys-no-cost).
-
-```
-Ask your AI:  "Evaluate AAPL using the stock-eval framework"
-Get back:     Piotroski score · ROIC · moat rating · buy/hold/sell signal
-```
-
-<div class="home-card">
-  <span class="home-card-icon">🎓</span>
-  <div class="home-card-body">
-    <div class="home-card-title">New to investing? Start with the Learning guide</div>
-    <p>A six-lesson field guide to the concepts behind every skill — from reading a balance sheet to valuing a business to holding a portfolio — in plain English and Traditional Chinese. No finance degree required.</p>
-    <p><a class="home-card-cta" href="https://yennanliu.github.io/InvestSkill/learning.html">Start learning →</a></p>
-  </div>
-</div>
-
----
-
-## Quick Start
-
-**Claude Code** — recommended, full slash-command support:
-```bash
-claude
-/plugin marketplace add yennanliu/InvestSkill
-/plugin install us-stock-analysis
-/us-stock-analysis:stock-eval AAPL
-```
-
-**Cursor / Copilot / Gemini CLI** — clone once, use everywhere:
-```bash
-git clone https://github.com/yennanliu/InvestSkill.git
-cd InvestSkill
-
-# Cursor
-cursor .
-# → @prompts/stock-eval.md Evaluate Apple
-
-# Gemini CLI
-gemini
-# → @prompts/stock-eval.md Evaluate Apple
-
-# Any LLM — paste the prompt file directly
-cat prompts/stock-eval.md | pbcopy
-```
-
-> Full platform guides: [Claude Code](README-claude-code.md) · [Cursor](README-cursor.md) · [Gemini CLI](README-gemini.md) · [Ollama](README-ollama.md)
-
----
-
-## No API Keys, No Cost
-
-InvestSkill is **completely free to use** — there is nothing to buy, register, or configure.
-
-| | |
-|---|---|
-| **API keys** | **None.** No OpenAI / Anthropic / Alpha Vantage / Polygon key. The plugin never calls an endpoint — there is no code to call one with. |
-| **Subscriptions** | **None.** No paid tier, no seats, no usage metering, no account. |
-| **Market-data fees** | **None.** No Bloomberg, no paid data feed. The AI reads public filings and free sources — or you paste the numbers in yourself. |
-| **Install / runtime** | **None.** Every skill is a plain markdown prompt. Nothing runs on your machine, so nothing phones home. |
-| **License** | **MIT.** Free to use, fork, and modify — for personal or commercial work. |
-
-**The only thing you need is an AI assistant you already have.** That can be a paid plan (Claude Code, Cursor, Copilot), a free tier (ChatGPT, Gemini, Claude.ai), or a fully offline local model via [Ollama](README-ollama.md) — in which case the total cost of running every framework is literally zero.
-
-> Because there's no API, there's also no telemetry: InvestSkill never sees your tickers, your holdings, or your analysis. See [Data & Accuracy](site/content/DATA-AND-ACCURACY.md) for where the numbers actually come from.
-
----
-
-## The 26 Frameworks
-
-### Core Stock Analysis
-
-| Skill | What it produces |
-|-------|-----------------|
-| `stock-eval` | Piotroski F-Score, ROIC, quality rating, go/no-go signal |
-| `fundamental-analysis` | Income statement, balance sheet, cash flow deep dive |
-| `technical-analysis` | MA chart (30/60/90/200/365d) with trade entry/target/stop, chart patterns, RSI/MACD, MTF alignment, Ichimoku |
-| `dcf-valuation` | DCF intrinsic value, WACC sensitivity, bear/base/bull scenarios |
-| `stock-valuation` | P/E · P/S · EV/EBITDA · comparable company multiples |
-| `economics-analysis` | Macro indicators, recession probability, rate sensitivity |
-
-### Financial Reports
-
-| Skill | What it produces |
-|-------|-----------------|
-| `financial-report-analyst` | 10-K / 10-Q key findings, red flags, accounting quality |
-| `10k-digest` | Structured markdown digest — abstract, section summaries, metrics table, refs (EN / 繁中) |
-| `earnings-call-analysis` | Management tone, guidance delta, hidden risks |
-
-### Market Monitoring
-
-| Skill | What it produces |
-|-------|-----------------|
-| `insider-trading` | SEC Form 4 patterns, net buy/sell sentiment |
-| `institutional-ownership` | 13F holdings changes, smart money flows |
-| `dividend-analysis` | Payout safety score, yield trap detection |
-| `short-interest` | Short ratio, days-to-cover, squeeze probability |
-
-### Advanced Research
-
-| Skill | What it produces |
-|-------|-----------------|
-| `competitor-analysis` | Moat score, Porter's Five Forces, market share |
-| `industry-map` | Supply/value-chain graph (upstream→downstream), chokepoints, margin-pool migration, second-order ideas |
-| `options-analysis` | Greeks, IV rank, earnings play strategy selection |
-| `portfolio-review` | Allocation health, concentration risk scoring, correlation analysis, tax-loss harvesting, rebalancing plan |
-| `sector-analysis` | Sector rotation signals, valuation tables, seasonality calendar, momentum scoring |
-| `stock-screener` | Multi-ticker ranking across valuation, quality, momentum, sentiment, and growth; leaderboard + top picks + avoid list |
-| `catalyst-calendar` | Forward-looking 90-day event calendar: earnings, macro events, catalysts, impact scoring, event-driven strategies |
-| `bear-case` | Deliberate short-seller red-team: bear thesis, accounting red flags, downside target, thesis-killers (counterevidence for any bull thesis) |
-| `position-ladder` | Staged entry ladder + trim/re-add cycle for a single holding: share-count floor/ceiling, blended cost basis, wash-sale flags, total-return-vs-buy-and-hold check, thesis-break gate |
-
-### Meta & Output
-
-| Skill | What it produces |
-|-------|-----------------|
-| `research-bundle` | Chains all frameworks into one unified investment thesis |
-| `full-report` | Runs all 15 modules and saves a standalone HTML report |
-| `report-generator` | Converts any analysis into a professional HTML/PDF report |
-| `chart-master` | Mermaid · ASCII · Chart.js visualizations from financial data |
-| `result-validator` | Scores any analysis on data quality, methodology, and signal consistency |
-
----
-
-## Example Workflows
-
-**5-minute stock screen**
-```
-/stock-eval NVDA
-/stock-eval AMD
-→ Piotroski scores + quality rating for quick go/no-go
-```
-
-**Complete due diligence**
-```
-/stock-eval AAPL
-/fundamental-analysis AAPL
-/stock-valuation AAPL --methods all
-/competitor-analysis AAPL
-/financial-report-analyst AAPL 10-K
-→ Full investment thesis in one session
-```
-
-**Earnings season playbook**
-```
-/fundamental-analysis TICKER          ← pre-earnings baseline
-/earnings-call-analysis TICKER        ← post-earnings [paste transcript]
-/options-analysis TICKER --earnings   ← vol expectations + strategy
-→ Complete earnings thesis
-```
-
-**Export a professional report**
-```
-/full-report AAPL
-→ Saves output/AAPL_report_2026-05-12.html
-   (hero header · metric cards · interactive Chart.js · signal block)
+```text
+InvestAnalyst/
+├── .agents/
+│   └── skills/           # 🧠 คลัง AI Skills สำหรับการวิเคราะห์หุ้น (27 ทักษะ)
+├── prompts/              # 📝 Prompt Frameworks สำหรับการวิเคราะห์
+├── data/                 # 📚 ข้อมูลความรู้และงบการเงินตัวอย่าง (10-K Reports)
+├── site/                 # 🌐 ระบบเว็บไซต์ความรู้และคู่มือการเรียนรู้
+│   ├── content/          # เนื้อหาบทเรียนความรู้การลงทุน (รวมฉบับภาษาไทย -th)
+│   ├── learning-th.html  # หน้าเว็บไซต์ศูนย์การเรียนรู้ภาษาไทย
+│   └── build/            # สไตล์และสคริปต์แสดงผลเว็บไซต์
+├── scripts/
+│   └── generate_th_html.py # สคริปต์คอมไพล์เอกสารภาษาไทยเป็นเว็บ HTML
+├── AGENTS.md             # ⚙️ กฎและค่ากำหนดภาษาของ Agent (ตอบภาษาไทย)
+└── README.md             # 📖 เอกสารแนะนำโปรเจกต์
 ```
 
 ---
 
-## Output Format
+## 🚀 1. คลังทักษะการวิเคราะห์ (Analysis Skills & Prompts)
 
-Every skill ends with a standardized **Investment Signal Block**:
+มีทักษะการวิเคราะห์ครอบคลุม 27 ด้าน เช่น:
 
-```
-╔══════════════════════════════════════════════╗
-║              INVESTMENT SIGNAL               ║
-╠══════════════════════════════════════════════╣
-║ Signal:      BULLISH / NEUTRAL / BEARISH     ║
-║ Confidence:  HIGH / MEDIUM / LOW             ║
-║ Horizon:     SHORT / MEDIUM / LONG-TERM      ║
-║ Score:       X.X / 10                        ║
-╠══════════════════════════════════════════════╣
-║ Action:      BUY / HOLD / SELL               ║
-║ Conviction:  STRONG / MODERATE / WEAK        ║
-╚══════════════════════════════════════════════╝
-```
-
-HTML reports render this as a styled dark panel with a score progress bar, ghost watermark text, and a teal/sky gradient accent — see [report-generator](prompts/report-generator.md) for the full design system.
+| หมวดหมู่ | ตัวอย่าง Skills (`.agents/skills/` & `prompts/`) | สิ่งที่ได้จากการวิเคราะห์ |
+| :--- | :--- | :--- |
+| **Core Analysis** | `stock-eval`, `fundamental-analysis`, `technical-analysis`, `dcf-valuation` | วิเคราะห์งบการเงิน, กราฟเทคนิค, ประเมินมูลค่ากระแสเงินสดคิดลด (DCF) |
+| **Filing Analysis** | `10k-digest`, `financial-report-analyst`, `earnings-call-analysis` | สรุปรายงานประจำปี 10-K, วิเคราะห์ Oppday/Earnings Call |
+| **Market & Money** | `institutional-ownership`, `insider-trading`, `short-interest`, `dividend-analysis` | ติดตาม Smart Money, การซื้อขายของผู้บริหาร, อัตรา Short Squeeze |
+| **Advanced & Strategy** | `competitor-analysis`, `industry-map`, `position-ladder`, `bear-case` | แผนที่ Value Chain อุตสาหกรรม, กลยุทธ์วางโซนราคา (Ladder), มุมมอง Bear Case |
 
 ---
 
-## Platform Support
+## 📚 2. ข้อมูลความรู้การลงทุน (Data & Learning Content)
 
-| Platform | Setup | How it works |
-|----------|-------|-------------|
-| **Claude Code** | Marketplace install | 23 native slash commands |
-| **Cursor IDE** | Clone repo, open folder | Auto-loads `.cursor/rules/` |
-| **Gemini CLI** | Clone repo, `cd` into it | Auto-loads `GEMINI.md` |
-| **GitHub Copilot** | Clone repo, open in VS Code | Auto-loads `.github/copilot-instructions.md` |
-| **Ollama (local models)** | Clone repo, run a local model | Offline open-source models, no API key — [guide](README-ollama.md) |
-| **ChatGPT / Claude.ai** | Paste any `prompts/*.md` file | Works in any chat interface |
-| **Any other LLM** | Reference or paste prompt files | Platform-agnostic markdown |
+- **`data/`**: เอกสารรายงานการเงินจริง (เช่น `NVDA_2026_10-K.pdf`, `AMD_2026_10-K.pdf`) สำหรับใช้ในการทดสอบและดึงข้อมูลเชิงลึก
+- **`site/content/`**: บทเรียนและคลังความรู้การลงทุน 8 บทหลัก และพจนานุกรมคำศัพท์ (มีทั้งฉบับภาษาไทยและอังกฤษ)
 
 ---
 
-## Learn the Frameworks
+## 🌐 3. เว็บไซต์การเรียนรู้ (Web & Learning Hub)
 
-New to investing, or unsure which skill to reach for? Start here:
-
-| Guide | What it gives you |
-|-------|-------------------|
-| [Concepts](site/content/CONCEPTS.md) | The mental models behind the metrics — quality vs. value vs. growth, intrinsic value, moats, risk, and the signal block |
-| [Glossary](site/content/GLOSSARY.md) | Plain-English definitions, formulas, and good/bad ranges for every metric the skills emit |
-| [Choose a Skill](site/content/CHOOSE-A-SKILL.md) | Map your goal to the right framework, plus comparisons of the ones that overlap |
-| [Use Cases](site/content/USE-CASES.md) | End-to-end journeys by investor type — income, first-timer, earnings, macro, skeptic |
-| [Data & Accuracy](site/content/DATA-AND-ACCURACY.md) | Where the numbers come from, how to spot hallucinations, and how to validate output |
+- สามารถเปิดไฟล์ [`site/learning-th.html`](site/learning-th.html) บน Browser ได้ทันที เพื่ออ่านคู่มือและบทเรียนการวิเคราะห์ทั้งหมดในภาษาไทย
+- หากมีการแก้ไขเนื้อหาใน `site/content/*-th.md` สามารถรันคำสั่งอัปเดตหน้าเว็บได้ด้วย:
+  ```bash
+  python scripts/generate_th_html.py
+  ```
 
 ---
 
-## Documentation
+## ⚙️ การใช้งานกับ AI Agent
 
-| Resource | Description |
-|----------|-------------|
-| [Live Docs Site](https://yennanliu.github.io/InvestSkill/) | Full documentation with dark-theme UI |
-| [Cookbook](https://yennanliu.github.io/InvestSkill/cookbook.html) | Walkthrough examples and use cases |
-| [Skill Reference](https://yennanliu.github.io/InvestSkill/skills.html) | All 26 frameworks, one browsable page each |
-| [Claude Code Guide](README-claude-code.md) | Plugin install + all slash commands |
-| [Cursor Guide](README-cursor.md) | Auto-loading rules + `@prompts/` usage |
-| [Gemini CLI Guide](README-gemini.md) | File references + multi-framework chains |
-| [Ollama Guide](README-ollama.md) | Local open-source models, offline & no API key |
-| [Adding Skills](ADDING-NEW-SKILLS.md) | 12-step contributor walkthrough |
-| [FAQ](FAQ.md) | 50+ answers covering all platforms |
-| [Changelog](CHANGELOG.md) | Version history |
+โปรเจกต์นี้ตั้งค่าคำสั่งใน [`AGENTS.md`](AGENTS.md) ให้ตอบและสรุปผลการวิเคราะห์เป็น **ภาษาไทย** โดยอัตโนมัติ พร้อมอ้างอิงศัพท์การเงินสากลเพื่อความแม่นยำ
 
 ---
 
-## Contributing
+## ⚖️ ข้อจำกัดความรับผิดชอบ (Disclaimer)
 
-See [ADDING-NEW-SKILLS.md](ADDING-NEW-SKILLS.md) for the full process. The short version:
-
-1. Create `plugins/us-stock-analysis/skills/<name>/SKILL.md` with YAML frontmatter
-2. Create `prompts/<name>.md` — same content, no frontmatter, AI-agnostic syntax
-3. Add to `plugin.json` skills array and bump version in both manifest files
-4. Run `npm test` — all 288+ tests must pass
-
-[Open an issue](https://github.com/yennanliu/InvestSkill/issues) to report bugs · [Start a discussion](https://github.com/yennanliu/InvestSkill/discussions) to propose features.
+*ข้อมูลและกรอบการวิเคราะห์ทั้งหมดในโปรเจกต์นี้มีไว้เพื่อวัตถุประสงค์ในการศึกษาและการวิจัยเท่านั้น ไม่ถือเป็นคำแนะนำทางการเงินหรือการชักชวนให้ซื้อขายหลักทรัพย์ใดๆ*
 
 ---
 
-**Version:** 1.11.0 · **Skills:** 26 · **Platforms:** 7 · **License:** MIT · **Tests:** 294+ passing
+## 📄 License
 
----
-
-<div align="center">
-
-*For educational and research purposes only. Not financial advice.*  
-*Always consult a qualified financial advisor before making investment decisions.*
-
-</div>
+MIT License

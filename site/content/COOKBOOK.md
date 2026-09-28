@@ -42,7 +42,19 @@ Practical examples, setup guide, and core concepts for getting the most out of I
 - [Claude Code](https://code.claude.com) installed (`npm install -g @anthropic-ai/claude-code`)
 - An active Anthropic API key
 
-### Install InvestSkill (2 minutes)
+### Install with one command (any agent)
+
+The installer copies the frameworks into `.investskill/prompts/` and wires up your agent's own entry point:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yennanliu/InvestSkill/main/install.sh | bash -s -- -a claude
+# swap the agent: cursor | copilot | gemini | codex | opencode | any
+curl -fsSL https://raw.githubusercontent.com/yennanliu/InvestSkill/main/install.sh | bash -s -- -l   # list every target
+```
+
+Add `-g` for a user-level install, `-d DIR` to target another directory, `-h` for all options.
+
+### Install InvestSkill via the plugin marketplace (2 minutes)
 
 ```bash
 # Step 1: Open Claude Code
@@ -58,7 +70,7 @@ claude
 /plugin list
 ```
 
-You should see `us-stock-analysis` in the list with 27 available skills.
+You should see `us-stock-analysis` in the list with 34 available skills (30 analysis frameworks, 3 aliases, and the `report-generator` output tool).
 
 ### Quick Test
 
@@ -140,7 +152,7 @@ plugins/us-stock-analysis/skills/
 ├── financial-report-analyst/SKILL.md
 ├── chart-master/SKILL.md           ← v1.6.0
 ├── full-report/SKILL.md            ← v1.6.0
-└── ... (27 skills total)
+└── ... (34 skills total)
 ```
 
 ### The Signal Block
@@ -1988,9 +2000,12 @@ Real-world investor scenarios showing how to combine multiple skills.
 # Includes: all signal blocks, interactive charts, football field valuation,
 #           sector comparison, risk matrix, entry/exit strategy
 
-# After reading, validate the composite output:
+# After reading, verify the inputs, then validate the reasoning:
+/us-stock-analysis:fact-check
+# Paste the report and the 10-K / IR release — every figure checked against the source,
+# derived numbers recomputed, a corrected copy with [n] citations and a References section
 /us-stock-analysis:result-validator
-# Paste the composite signal block — get a confidence score and any gaps flagged
+# Paste the composite signal block (and the fact-check ledger) — confidence score and gaps flagged
 ```
 
 ---
@@ -2051,11 +2066,66 @@ Real-world investor scenarios showing how to combine multiple skills.
 total-return comparison — in a strong rally the trim leg *costs* you money, and the
 plan says so in dollars.
 
+### Workflow H — Write the Thesis Down, Then Check It
+
+**Scenario:** You've done the work (Workflow E or G) and opened a position. Three months from now you want to know whether the *reason* you bought still holds — not how you feel about the price.
+
+```bash
+# Step 1: Open the thesis file while the analysis is fresh
+/us-stock-analysis:thesis-tracker NVDA — bought at $118 on 2026-05-30; thesis: data-center
+demand compounds for two more years and the market is pricing a one-off cycle
+# Paste the stock-eval and bear-case outputs. Returns: a sharpened one-paragraph thesis,
+# 3–5 KPIs with thresholds, triggers imported from bear-case's Thesis-Killers, the catalyst
+# list, a pre-mortem, and output/thesis/NVDA.md with status INTACT and a next-check date
+
+# Step 2: After the next print, re-check it against the new numbers
+/us-stock-analysis:thesis-tracker NVDA --update
+# Paste the 10-Q highlights. Returns one status line first —
+#   NVDA · WEAKENED · 2026-08-29 — Gross margin 68.1% (was 75.5%) breached the ≥ 70% threshold
+# — then the KPI table (old → new), which triggers fired, and a new decision-log row
+
+# Step 3: Let the status drive the position skill, not the other way round
+/us-stock-analysis:position-ladder NVDA
+# WEAKENED = hold, no adding, check sooner. BROKEN = the reason to own it is gone.
+```
+
+**Why bother:** the file is the only defence against the two classic errors — averaging down on a broken story and selling a working one on a bad week. Closed files feed the post-trade review.
+
+### Workflow I — An ETF Core, Stress-Tested and Tax-Aware
+
+**Scenario:** You want a low-cost core holding, you already own a few single stocks, and you want to know what the whole thing could lose — and what it costs in tax — before you buy.
+
+```bash
+# Step 1: Vet the candidates — cost, tracking, what you actually own, overlap with what you hold
+/us-stock-analysis:etf-analysis VOO SPYM VTI — I already hold AAPL, MSFT, NVDA (paste weights)
+# Returns: ETF Fitness Score per fund, the tracking-difference table, top-10 weight and tilt,
+#          your overlap % (the three names are already ~15% of an S&P 500 fund), and the
+#          "ETF vs. buying the top 5 directly" comparison
+
+# Step 2: Put the proposed portfolio through a bad regime before you own it
+/us-stock-analysis:risk-stress-test — 60% VTI, 15% AAPL, 15% MSFT, 10% NVDA; max drawdown I can live with: 30%
+# Returns: net beta, 2008 / Mar-2020 / 2022 / 2025 replays, VaR / CVaR, the correlation-spike case,
+#          days-to-exit, and a Risk Budget Score against your 30% — plus the smallest change that fits
+
+# Step 3: See what the plan costs after tax — and, if you are not a US person, the withholding and estate angle
+/us-stock-analysis:tax-lens --portfolio — taxable account, 24% bracket (paste lots)
+/us-stock-analysis:tax-lens --non-us Taiwan — same holdings at a US broker          # non-US investors
+# Returns: placement table, annual tax drag, harvest pairs; or — for Taiwan, which has no US tax
+#          treaty — the 30% statutory withholding (treaty-rate comparisons apply only to treaty countries),
+#          the $60k estate-tax exposure, and the US-ETF vs. Irish-UCITS arithmetic
+
+# Step 4: Make sure you understood it, not just received it
+/us-stock-analysis:learning-coach [paste the etf-analysis output] --level beginner
+# Returns: each metric explained, the lesson that teaches it, five questions, "what would change your mind?"
+```
+
+**Read the output honestly:** the cheapest fund is not automatically the best one — tracking difference and overlap with what you already own move the answer more than five basis points of expense ratio. And before an earnings date on one of the single names, run `earnings-preview` on it: the position rule should be decided before the print, not after.
+
 ---
 
 ## 5. Cross-AI Usage
 
-InvestSkill works with any AI assistant. The `prompts/` directory contains all 26 analysis frameworks as standalone files.
+InvestSkill works with any AI assistant. The `prompts/` directory contains all 30 analysis frameworks (plus 3 aliases and the report-generator output tool) as standalone files.
 
 ### Gemini CLI
 

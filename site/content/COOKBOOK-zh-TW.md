@@ -42,7 +42,19 @@ InvestSkill 的實用範例、安裝指南與核心概念。
 - 已安裝 [Claude Code](https://code.claude.com)（`npm install -g @anthropic-ai/claude-code`）
 - 有效的 Anthropic API 金鑰
 
-### 安裝 InvestSkill（約 2 分鐘）
+### 一行指令安裝（所有工具通用）
+
+安裝腳本會把框架複製到 `.investskill/prompts/`，並接上該工具自己的入口設定：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yennanliu/InvestSkill/main/install.sh | bash -s -- -a claude
+# 換成你的工具：cursor | copilot | gemini | codex | opencode | any
+curl -fsSL https://raw.githubusercontent.com/yennanliu/InvestSkill/main/install.sh | bash -s -- -l   # 列出所有安裝位置
+```
+
+加上 `-g` 安裝到使用者層級、`-d DIR` 指定目錄、`-h` 查看所有選項。
+
+### 透過外掛市集安裝 InvestSkill（約 2 分鐘）
 
 ```bash
 # 步驟 1：開啟 Claude Code
@@ -58,7 +70,7 @@ claude
 /plugin list
 ```
 
-確認在清單中看到 `us-stock-analysis`，並顯示 27 個可用技能，即表示安裝成功。
+確認在清單中看到 `us-stock-analysis`，並顯示 34 個可用技能（30 個分析框架、3 個別名，以及 `report-generator` 輸出工具），即表示安裝成功。
 
 ### 快速測試
 
@@ -140,7 +152,7 @@ plugins/us-stock-analysis/skills/
 ├── financial-report-analyst/SKILL.md
 ├── chart-master/SKILL.md           ← v1.6.0 新增
 ├── full-report/SKILL.md            ← v1.6.0 新增
-└── ...（共 27 個技能）
+└── ...（共 34 個技能）
 ```
 
 ### 標準訊號區塊
@@ -1889,9 +1901,12 @@ Samsung / Apple 設計案報導，取自 stockanalysis.com 新聞頁，2026/07/2
 # 內容包含：所有訊號區塊、互動圖表、橄欖球估值圖、板塊比較、
 #           風險矩陣、進出場策略
 
-# 閱讀後，驗證綜合輸出：
+# 閱讀後，先查核輸入，再驗證推理：
+/us-stock-analysis:fact-check
+# 貼上報告與 10-K／IR 新聞稿——每個數字對照來源查核、衍生數字重算，
+# 產出附 [n] 引用與參考文獻章節的修正版
 /us-stock-analysis:result-validator
-# 貼入綜合訊號區塊——取得信心評分，標記任何遺漏項目
+# 貼入綜合訊號區塊（與查核表）——取得信心評分，標記任何遺漏項目
 ```
 
 ---
@@ -1951,11 +1966,64 @@ Samsung / Apple 設計案報導，取自 stockanalysis.com 新聞頁，2026/07/2
 **誠實解讀輸出：** 平均成本下降不等於賺錢。務必看總報酬對照——在強勢上漲時，
 賣出高成本批次那一腿其實**讓你少賺**，計畫會直接把金額算給你看。
 
+### 工作流程 H — 把論點寫下來，之後再檢查
+
+**情境：** 你已做完功課（工作流程 E 或 G）並建立部位。三個月後你想知道的是*買進的理由*是否還成立——而不是你對股價的感覺。
+
+```bash
+# 步驟 1：趁分析還新鮮，先開立論點檔
+/us-stock-analysis:thesis-tracker NVDA — 2026-05-30 以 $118 買進；論點：資料中心需求
+再複合成長兩年，而市場只把它當成一次性景氣循環
+# 貼上 stock-eval 與 bear-case 的輸出。回傳：磨尖後的一段式論點、3–5 個附門檻的 KPI、
+# 從 bear-case 論點反證匯入的觸發條件、催化劑清單、事前驗屍，以及狀態為 INTACT、
+# 附下次檢查日期的 output/thesis/NVDA.md
+
+# 步驟 2：下一次財報後，用新數字重新檢查
+/us-stock-analysis:thesis-tracker NVDA --update
+# 貼上 10-Q 重點。第一行就是狀態——
+#   NVDA · WEAKENED · 2026-08-29 — 毛利率 68.1%（原 75.5%）跌破 ≥ 70% 門檻
+# ——接著是 KPI 表（舊 → 新）、哪些觸發條件被觸發，以及新增的一行決策日誌
+
+# 步驟 3：讓狀態驅動部位技能，而不是反過來
+/us-stock-analysis:position-ladder NVDA
+# WEAKENED ＝ 續抱、不加碼、提前檢查。BROKEN ＝ 持有的理由已不存在。
+```
+
+**為什麼值得做：** 這個檔案是對抗兩個經典錯誤的唯一防線——在論點已破損時攤平，以及在論點仍成立時因為一週的壞行情賣出。已結案的檔案會成為交易事後檢討的素材。
+
+### 工作流程 I — 以 ETF 為核心，先壓力測試、再看稅
+
+**情境：** 你想要一檔低成本的核心持股，手上已有幾檔個股，想在買進前知道整體最多可能虧多少、稅上要付出什麼。
+
+```bash
+# 步驟 1：評估候選 ETF——成本、追蹤、實際持有什麼、與現有持股的重疊
+/us-stock-analysis:etf-analysis VOO SPYM VTI — 我已持有 AAPL、MSFT、NVDA（貼上權重）
+# 輸出：各基金的 ETF 適配分數、追蹤差異表、前十大權重與傾斜、你的重疊 %
+#      （這三檔已占 S&P 500 基金約 15%），以及「買 ETF vs. 直接買前五大」的比較
+
+# 步驟 2：在持有之前，先讓這個投組經歷一次惡劣環境
+/us-stock-analysis:risk-stress-test — 60% VTI、15% AAPL、15% MSFT、10% NVDA；我能承受的最大回撤：30%
+# 輸出：淨貝他、2008／2020 年 3 月／2022／2025 情境重演、VaR／CVaR、相關性飆升情境、
+#      出清所需天數，以及對照你 30% 門檻的風險預算分數——加上讓它符合預算的最小調整
+
+# 步驟 3：看這個計畫稅後剩多少——非美國投資人另看預扣稅與遺產稅
+/us-stock-analysis:tax-lens --portfolio — 應稅帳戶、24% 稅級（貼上批次）
+/us-stock-analysis:tax-lens --non-us Taiwan — 同樣持股放在美國券商          # 非美國投資人
+# 輸出：帳戶配置表、年度稅務拖累、稅損收割配對；或——台灣與美國無租稅協定——30% 法定預扣稅
+#      （協定稅率比較只適用於有協定的國家）、6 萬美元以上的遺產稅曝險，以及美國 ETF vs. 愛爾蘭 UCITS 的算術
+
+# 步驟 4：確認你真的看懂了，而不只是收到了
+/us-stock-analysis:learning-coach [貼上 etf-analysis 的輸出] --level beginner --lang zh-TW
+# 輸出：每個指標的解說、對應課程、五個問題、「什麼會改變你的看法？」
+```
+
+**誠實解讀輸出：** 最便宜的基金不一定最好——追蹤差異與你既有持股的重疊，對答案的影響遠大於五個基點的費用率差。另外，個股財報日之前先跑 `earnings-preview`：部位規則要在財報公布前決定，而不是之後。
+
 ---
 
 ## 5. 跨 AI 工具使用
 
-InvestSkill 適用於任何 AI 助手。`prompts/` 目錄包含所有 26 個分析框架的獨立檔案。
+InvestSkill 適用於任何 AI 助手。`prompts/` 目錄包含所有 30 個分析框架（另含 3 個別名與 report-generator 輸出工具）的獨立檔案。
 
 ### Gemini CLI
 
